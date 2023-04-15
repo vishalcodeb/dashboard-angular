@@ -14,6 +14,6 @@
   </div>
   <div mat-dialog-actions class="action">
     <button mat-raised-button [mat-dialog-close]="false">Cancle</button>
-    <button mat-raised-button color="primary" type="submit">{{data ? 'Update' : 'Save'}}</button>
+    <button mat-raised-button color="primary" type="submit" [disabled]="!productForm.valid">{{data ? 'Update' : 'Save'}}</button>
   </div>
 </form>

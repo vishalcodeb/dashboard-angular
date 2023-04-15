@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ProductService } from '../services/product.service';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { CoreService } from '../core/core.service';
@@ -19,8 +19,8 @@ export class ProductComponent implements OnInit {
     private coreService: CoreService
   ) {
     this.productForm = this.fb.group({
-      name: '',
-      price: '',
+      name: ['', Validators.required],
+      price: ['', Validators.required],
     });
   }
 

@@ -1,5 +1,10 @@
-import { Component, Inject, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Component, Inject, Input, OnInit, VERSION } from '@angular/core';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 import { ProductService } from '../services/product.service';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { CoreService } from '../core/core.service';
@@ -11,6 +16,7 @@ import { CoreService } from '../core/core.service';
 })
 export class ProductComponent implements OnInit {
   productForm: FormGroup;
+
   constructor(
     private fb: FormBuilder,
     private productService: ProductService,
@@ -19,8 +25,10 @@ export class ProductComponent implements OnInit {
     private coreService: CoreService
   ) {
     this.productForm = this.fb.group({
+      sku: ['', Validators.required],
       name: ['', Validators.required],
       price: ['', Validators.required],
+      imgUrl: [''],
     });
   }
 
@@ -28,7 +36,7 @@ export class ProductComponent implements OnInit {
     this.productForm.patchValue(this.data);
   }
 
-  onFormSubmit() {
+  async onFormSubmit() {
     if (this.productForm.valid) {
       if (this.data) {
         console.log(this.productForm.value);
@@ -44,7 +52,10 @@ export class ProductComponent implements OnInit {
             },
           });
       } else {
-        console.log(this.productForm.value);
+        console.log('this.productForm.value', this.productForm.value);
+        this.productForm.value.imgUrl =
+          this.productForm.value.imgUrl.split('?')[0];
+
         this.productService.addProduct(this.productForm.value).subscribe({
           next: (val: any) => {
             this.coreService.openSnackBar('Product Added!', 'done');
@@ -55,6 +66,41 @@ export class ProductComponent implements OnInit {
           },
         });
       }
+    }
+  }
+
+  getFileOnLoad(event: any, test: string) {
+    const file = event.target.files[0];
+    console.log('file', file);
+    let imgUrl;
+
+    const element = document.getElementById(
+      'fileInput'
+    ) as HTMLInputElement | null;
+
+    if (element != null) {
+      element.value = file?.name;
+
+      this.productService.getS3Url().subscribe({
+        next: (val: any) => {
+          imgUrl = val.data;
+          this.productService.uploadImageToS3(imgUrl, element.value).subscribe({
+            next: (val: any) => {
+              this.productForm.value.imgUrl = val.data;
+              console.log(
+                'this.productForm.value.imgUrl',
+                this.productForm.value.imgUrl
+              );
+            },
+            error: (err: Error) => {
+              console.log('s3 error ', err);
+            },
+          });
+        },
+        error: (err: any) => {
+          console.log('Error', err);
+        },
+      });
     }
   }
 }

@@ -5,6 +5,7 @@ import { ProductService } from './services/product.service';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { CoreService } from './core/core.service';
+import * as AWS from 'aws-sdk';
 
 @Component({
   selector: 'app-root',
@@ -14,7 +15,7 @@ import { CoreService } from './core/core.service';
 export class AppComponent implements OnInit {
   title = 'dashboard-app';
 
-  displayedColumns: string[] = ['id', 'name', 'price', 'actions'];
+  displayedColumns: string[] = ['sku', 'name', 'price', 'imgUrl', 'actions'];
   dataSource = new MatTableDataSource<any>();
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -42,7 +43,7 @@ export class AppComponent implements OnInit {
     this.productService.getProductList().subscribe({
       next: (res: any) => {
         console.log('res', res);
-        this.dataSource = new MatTableDataSource(res);
+        this.dataSource = new MatTableDataSource(res.data);
         this.dataSource.paginator = this.paginator;
       },
       error: console.log,
@@ -52,7 +53,7 @@ export class AppComponent implements OnInit {
   deleteProduct(id: number) {
     this.productService.deleteProduct(id).subscribe({
       next: () => {
-        this.coreService.openSnackBar('Product Deleted!','done')
+        this.coreService.openSnackBar('Product Deleted!', 'done');
         this.getProducts();
       },
       error: console.log,

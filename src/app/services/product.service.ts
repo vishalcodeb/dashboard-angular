@@ -1,12 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import * as aws from 'aws-sdk';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ProductService {
-  private base_url = 'http://localhost:3000/product';
+  private base_url = 'http://localhost:3000/api/v1/product';
 
   constructor(private http: HttpClient) {}
 
@@ -24,5 +25,17 @@ export class ProductService {
 
   updateProduct(id: any, data: any): Observable<any> {
     return this.http.put(`${this.base_url}/${id}`, data);
+  }
+
+  getS3Url(): Observable<any> {
+    return this.http.get(`${this.base_url}/getUrl`);
+  }
+
+  uploadImageToS3(url: string, file: any): Observable<any> {
+    return this.http.put(`${url}`, file, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
   }
 }

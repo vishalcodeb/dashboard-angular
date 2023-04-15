@@ -6,9 +6,9 @@
 <div class="table-container">
   <table mat-table [dataSource]="dataSource">
 
-    <ng-container matColumnDef="id">
-      <th mat-header-cell *matHeaderCellDef> Id. </th>
-      <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+    <ng-container matColumnDef="sku">
+      <th mat-header-cell *matHeaderCellDef> SKU </th>
+      <td mat-cell *matCellDef="let element"> {{element.sku}} </td>
     </ng-container>
 
     <ng-container matColumnDef="name">
@@ -19,6 +19,11 @@
     <ng-container matColumnDef="price">
       <th mat-header-cell *matHeaderCellDef> Price </th>
       <td mat-cell *matCellDef="let element"> {{element.price | currency:'INR'}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="imgUrl">
+      <th mat-header-cell *matHeaderCellDef> Image </th>
+      <td mat-cell *matCellDef="let element" type="image"> <img [src]="element.imgUrl" class="product-img"> </td>
     </ng-container>
 
     <ng-container matColumnDef="actions">

@@ -7,7 +7,7 @@ import * as aws from 'aws-sdk';
   providedIn: 'root',
 })
 export class ProductService {
-  private base_url = 'http://localhost:3000/api/v1/product';
+  private base_url = 'http://3.110.154.209/api/v1/product';
 
   constructor(private http: HttpClient) {}
 
